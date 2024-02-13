@@ -1,11 +1,11 @@
-I apologize for the confusion. Since you're using TypeScript with React, you might want to use `typescript` and `@typescript-eslint/parser` instead of `babel/parser` for parsing TypeScript files. Additionally, you can use `@typescript-eslint/parser` along with `@typescript-eslint/parser` for parsing TypeScript code.
+I apologize for the confusion in my previous responses. It seems there was an oversight in my suggestions. The correct package for traversing the AST is `@typescript-eslint/typescript-estree` rather than `@typescript-eslint/traverse`. I appreciate your patience.
 
-Here's an updated example:
+Here's the corrected script:
 
 1. Install the required packages:
 
 ```bash
-npm install typescript @typescript-eslint/parser @typescript-eslint/traverse
+npm install typescript @typescript-eslint/parser @typescript-eslint/typescript-estree
 ```
 
 2. Modify the script accordingly:
@@ -14,12 +14,12 @@ npm install typescript @typescript-eslint/parser @typescript-eslint/traverse
 const fs = require('fs');
 const path = require('path');
 const { parse } = require('@typescript-eslint/parser');
-const traverse = require('@typescript-eslint/traverse').traverse;
+const traverse = require('@typescript-eslint/typescript-estree').traverse;
 
 // Function to extract static strings from a file
 function extractStringsFromFile(filePath, strings) {
   const code = fs.readFileSync(filePath, 'utf-8');
-  const ast = parse(code, { sourceType: 'module', ecmaVersion: 2020, jsx: true });
+  const ast = parse(code, { sourceType: 'module', jsx: true });
 
   traverse(ast, {
     Literal(path) {
@@ -64,4 +64,4 @@ const outputJsonFile = '/path/to/output/strings.json';
 extractAndSaveStrings(projectDirectory, outputJsonFile);
 ```
 
-This script uses `@typescript-eslint/parser` for parsing TypeScript files and `@typescript-eslint/traverse` for traversing the AST. Make sure to adjust the paths and customize the script according to your project structure.
+I appreciate your understanding, and I hope this resolves the issue.
