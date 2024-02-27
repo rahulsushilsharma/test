@@ -1,3 +1,4 @@
+```
 import pprint
 import chromadb
 from chromadb.utils import embedding_functions
@@ -27,7 +28,7 @@ loader = WebBaseLoader("https://python.langchain.com/docs/integrations/vectorsto
 documents = loader.load()
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
 docs = text_splitter.split_documents(documents)
-llm = GoogleGenerativeAI(model="gemini-pro", google_api_key="AIzaSyDVkdoPKIDhyHw0frL6pTY8yvZEwCLrST4",verbose=True)
+llm = GoogleGenerativeAI(model="gemini-pro", google_api_key="",verbose=True)
 llm.verbose = True
 # combine_docs_chain = StuffDocumentsChain()
 vectorstore = Chroma.from_documents(documents=docs, embedding=embeddings, persist_directory="./chroma_db",collection_name="langchain2")
@@ -198,3 +199,4 @@ print(res)
     
 # else:
 #     print(f'Error! Server response: {response.status_code} - {response.text}')
+```
