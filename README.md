@@ -200,3 +200,63 @@ print(res)
 # else:
 #     print(f'Error! Server response: {response.status_code} - {response.text}')
 ```
+```
+import fitz  # PyMuPDF
+import re
+import os
+from PIL import Image
+import io
+
+def extract_images(doc, image_dir):
+    if not os.path.exists(image_dir):
+        os.makedirs(image_dir)
+    image_counter = 0
+    for i in range(len(doc)):
+        page = doc.load_page(i)
+        for img in page.get_images(full=True):
+            xref = img[0]
+            base_image = doc.extract_image(xref)
+            image_bytes = base_image["image"]
+            image_ext = base_image["ext"]
+            image = Image.open(io.BytesIO(image_bytes))
+            image_filename = f"{image_dir}/image_{image_counter}.{image_ext}"
+            image.save(image_filename)
+            image_counter += 1
+            yield f"[IMAGE_{image_counter}]"
+
+def extract_tables(page):
+    # Dummy function for table extraction
+    # This should be replaced with actual table extraction logic
+    return re.findall(r"\[TABLE.*?\]", page.get_text())
+
+def extract_content(pdf_path, image_dir):
+    doc = fitz.open(pdf_path)
+    extracted_text = ""
+    image_gen = extract_images(doc, image_dir)
+    
+    for i in range(len(doc)):
+        page = doc.load_page(i)
+        page_text = page.get_text()
+        
+        # Replace tables with placeholder IDs
+        tables = extract_tables(page)
+        for j, table in enumerate(tables):
+            table_id = f"[TABLE_{i+1}_{j+1}]"
+            page_text = page_text.replace(table, table_id)
+        
+        # Replace images with placeholder IDs
+        image_placeholders = list(image_gen)
+        for placeholder in image_placeholders:
+            page_text = page_text.replace("image", placeholder, 1)  # Replace first occurrence only
+        
+        extracted_text += page_text + "\n"
+    
+    return extracted_text
+
+pdf_path = "/mnt/data/layout-parser-paper.pdf"
+image_dir = "extracted_images"
+extracted_text = extract_content(pdf_path, image_dir)
+
+with open("extracted_content.txt", "w") as text_file:
+    text_file.write(extracted_text)
+```  
